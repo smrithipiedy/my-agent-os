@@ -1,0 +1,8 @@
+.env.local
+.env
+*.env
+/.system/agent.db
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/

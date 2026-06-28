@@ -110,7 +110,7 @@ These are the measurable signals that confirm the system is working, not just cl
 
 1. **Goal-to-task decomposition rate:** ≥ 90% of goals submitted to `/inbox/goal.md` produce a valid, structured task list in `/tasks/active/` within one session — measured by counting files created vs goals submitted
 2. **Task execution success rate:** ≥ 80% of tasks in `/tasks/active/` reach `status: completed` with a corresponding file in `/outputs/<task-id>/result.md`
-3. **Verification pass rate:** ≥ 75% of completed tasks receive `verified: true` in `/outputs/<task-id>/verification.md` — tracked in `/memory/episodic-log.jsonl`
+3. **Verification pass rate:** ≥ 80% of completed tasks receive `verified: true` in `/outputs/<task-id>/verification.md` — tracked in `/memory/episodic-log.jsonl`
 4. **Memory record completeness:** Every verified task produces exactly one entry in `/memory/episodic-log.jsonl` — zero gaps, tracked by counting entries vs verified tasks
 5. **Session log coverage:** Every session produces a `/logs/session-YYYYMMDD.md` file listing every file touched, every command run, and the final verification status — measured by existence of log file at session end
 6. **Learning accumulation:** `/memory/learnings.md` grows by at least one concrete, non-trivial entry per session — measured by line count delta per session
