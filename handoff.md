@@ -1,8 +1,8 @@
 # Handoff
 **System:** my-agent-os
-**Written at end of:** Session 1
+**Written at end of:** Session 2
 **Date:** 2026-06-28
-**Next session:** Session 2
+**Next session:** Session 3
 
 ---
 
@@ -10,66 +10,78 @@
 
 | File | Purpose |
 |---|---|
-| `AGENTS.md` | Pre-existing; read and acknowledged. Defines mandatory agent protocol. |
-| `system/capability-matrix.md` | Full yes/no/partial assessment of 22 runtime capabilities; resolution plan for every gap |
-| `system/implementation-contract.md` | Mission, runtime profile, first milestone (concrete 8-step chain), non-goals, constraints, safety posture, 8 proof-of-progress metrics, verification strategy |
-| `system/momentum.md` | Five queues: NOW, NEXT, BLOCKED, IMPROVE, RECURRING — all populated with real current content |
-| `system/milestones.md` | Four milestones defined with what they require, definition of done, and evidence that must exist |
-| `status.md` | Current session, system health, last/next action, milestone progress table, blockers |
-| `handoff.md` | This file — continuity document for Session 2 |
-
-**All files have real content. No placeholders. All committed to git.**
+| `REQUIREMENTS.md` | Functional requirements, constraints, M1 evidence table, 8 verification metrics |
+| `WORKFLOW.md` | 8-phase pipeline — every phase has file artifacts + failure handling |
+| `system/FAILURE.md` | Living failure log — 3 real entries (CarbonWise Zod, CrowdSense Firebase, BallotIQ quota) |
+| `system/contracts.md` | 5 binding contracts: done, evidence, handoff, memory, session log |
+| `system/knowledge.md` | 6 working patterns, 6 anti-patterns, stack decisions, dependency failure modes |
+| `system/memory.md` | Memory index — 7 memory files with types, update triggers, retrieval guide |
+| `hub/README.md` | Control plane directory — future REST/WebSocket layer |
+| `workers/README.md` | Worker types, inheritance rules, output paths, safety constraints |
+| `agents/README.md` | Agent profiles, planned agents, autonomy levels |
+| `skills/README.md` | Skill file format, extraction rules, index requirements |
+| `rules/README.md` | Policy layer, current rule files index, meta-rules |
+| `evals/README.md` | Test case format, results history, regression detection rules |
+| `memory/README.md` | Memory types quick reference, integrity rules |
+| `docs/README.md` | Documentation quality standards |
+| `scripts/README.md` | Utility scripts, idempotency rules |
+| `workflows/README.md` | Workflow harness, planned workflows, checkpoint rules |
+| `projects/README.md` | Naming convention, template usage rules |
+| `incidents/README.md` | Severity levels, incident report template, post-mortem rules |
+| `.system/README.md` | Runtime state files, gitignore status, session-lock rules |
+| `projects/_template/project.md` | Charter template with all fields |
+| `projects/_template/plan.md` | Plan template with milestones and workstreams |
+| `projects/_template/tasks.md` | Task template with full 20-field schema |
+| `projects/_template/knowledge.md` | Project knowledge template |
+| `projects/_template/decisions.md` | ADR template |
+| `projects/_template/status.md` | Status template |
+| `projects/_template/handoff.md` | Handoff template |
+| `projects/_template/artifacts/README.md` | Artifacts directory template |
+| `projects/smrithi-agent-os/project.md` | Real charter: confirmed milestones, risks, dependencies |
+| `projects/smrithi-agent-os/plan.md` | Real plan: 4 workstreams across 16 sessions |
+| `projects/smrithi-agent-os/tasks.md` | Real tasks: 4 Session 2 tasks in full schema |
+| `projects/smrithi-agent-os/knowledge.md` | Real knowledge: 3 patterns, 2 gotchas, API notes, env config |
+| `projects/smrithi-agent-os/decisions.md` | 4 real ADRs (Python, file-only, guided, free-form) |
+| `projects/smrithi-agent-os/status.md` | Real project status |
+| `projects/smrithi-agent-os/handoff.md` | Project-level handoff for Session 3 |
+| `projects/smrithi-agent-os/artifacts/README.md` | Artifacts index (empty) |
+| `system/momentum.md` | Updated: NOW cleared, NEXT populated with 11 Session 3 tasks |
+| `status.md` | Updated: Session 2 complete, blockers documented |
+| `handoff.md` | This file |
 
 ---
 
-## What Session 2 Must Do
+## What Session 3 Must Do
+**Build Order Step 4: Orchestrator + First Worker**
 
-Session 2 picks up at **Build Order Step 1: Inbox + Orchestrator Foundation**.
+Reference: `projects/smrithi-agent-os/plan.md` → Workstream 1, Session 3 tasks
 
-### Specific tasks for Session 2 (in order):
-
-1. **Verify environment** — run `python --version` and confirm `google-generativeai` is installed or install it. Check that `.env.local` exists with `GEMINI_API_KEY`.
-
-2. **Create the inbox system** — write `/inbox/goal.md` as a template with schema comments explaining the format Smrithi uses to submit goals.
-
-3. **Create the task schema** — write `/tasks/schema.json` defining the exact structure of a task file (id, goal_id, description, worker_type, inputs, expected_output, status, created_at, completed_at, verified).
-
-4. **Create the worker registry** — write `/workers/registry.json` mapping worker_type strings (`code_writer`, `shell_runner`, `web_searcher`, `file_editor`, `browser_agent`) to their handler module paths.
-
-5. **Build the orchestrator** — write `/orchestrator/run.py` that:
-   - Reads `/inbox/goal.md`
-   - Calls Gemini API to decompose the goal into 2–5 sub-tasks
-   - Writes each task as a JSON file to `/tasks/active/`
-   - Logs the decomposition to `/logs/session-YYYYMMDD.md`
-
-6. **Stub the first worker** — write `/workers/code_writer.py` that accepts a task dict, calls Gemini API to generate the code, and writes the result to `/outputs/<task-id>/result.md`.
-
-7. **Create memory schema** — write `/memory/episodic-log.jsonl` (empty but with a schema comment at top) and `/memory/learnings.md` (empty but with format instructions).
-
-8. **Run one test goal** — submit a real simple goal (e.g., "Write a Python function that reads a CSV file and returns the column names") through the full pipeline. Verify all 8 steps produce their artifacts.
-
-9. **Update all continuity files** — status.md, handoff.md, momentum.md, and commit everything.
-
-**Reference:** See `system/milestones.md` → Milestone 1 for the full Definition of Done.
+1. **Verify environment** (first action, use `run_command`): `python --version` — must be ≥ 3.10
+2. **Install packages** (requires approval): `pip install google-generativeai python-dotenv`
+3. **Validate API key** — write and run a 3-line Python test to confirm `GEMINI_API_KEY` loads from `.env.local`
+4. **Create `/inbox/goal.md`** — template file with sample goal and format instructions
+5. **Create `/tasks/schema.json`** — JSON Schema for all task files; fields from `projects/_template/tasks.md`
+6. **Write `/workers/registry.json`** — maps 5 worker_type strings to handler paths
+7. **Build `/workers/base_worker.py`** — abstract base class: `execute(task: dict) -> str`; handles result.md write, error.md write, status updates
+8. **Build `/workers/code_writer.py`** — first real worker: loads task, calls Gemini with code-gen prompt, validates response, writes to `/outputs/<task-id>/result.md`
+9. **Build `/orchestrator/run.py`** — Phase 1-3 of WORKFLOW.md: reads goal.md, calls Gemini for decomposition, validates schema, writes task JSONs, presents task list for approval
+10. **Build `/scripts/setup.py`** — idempotent env validator: Python version, API key, required packages, required directories
+11. **Create `/memory/episodic-log.jsonl`** — empty file with schema comment
+12. **Create `/memory/preferences.md`** — Smrithi's confirmed preferences from Session 2 answers
+13. **Update all continuity files and commit**
 
 ---
 
 ## Blockers Discovered This Session
 
-1. **Gemini API key** — not confirmed present. Smrithi must create `.env.local` with `GEMINI_API_KEY=<your-key>` before Session 2. Key can be obtained from Google AI Studio (aistudio.google.com).
-
-2. **Python environment** — not verified. Session 2 must run `python --version` as its first action. If Python is not available, install it before proceeding.
-
-3. **Worker language decision** — chosen as Python for v1 (aligns with Gemini Python SDK); Smrithi should confirm this matches her preferences before Session 2 proceeds with implementation.
+1. **Python not verified** — `python --version` must be the first shell command in Session 3
+2. **`google-generativeai` not installed** — pip install required; needs user approval per safety posture
 
 ---
 
-## Open Questions That Need Answers
+## Open Questions
 
-| # | Question | Who answers | Priority |
+| # | Question | Who Answers | Priority |
 |---|---|---|---|
-| 1 | Is `GEMINI_API_KEY` available in `.env.local` or does Smrithi need to set it up? | Smrithi | HIGH — blocks Session 2 orchestrator |
-| 2 | Confirm Python as the language for v1 workers, or prefer Node.js? | Smrithi | HIGH — affects all worker implementations |
-| 3 | Should Supabase be used for memory persistence from the start, or file-only for v1? | Smrithi | MEDIUM — file-only is safe default |
-| 4 | Should the orchestrator decompose goals automatically (fully autonomous) or show Smrithi the task list for approval before executing? | Smrithi | MEDIUM — affects safety posture |
-| 5 | Is there a preferred goal format, or should the inbox accept free-form plain text? | Smrithi | LOW — free-form is the safe default |
+| 1 | Python version on Smrithi's machine? | Verify via shell at Session 3 start | MEDIUM |
+| 2 | Hub: Python/FastAPI or Node.js/Express? | Smrithi | LOW — not needed until Session 5+ |
